@@ -1,0 +1,9 @@
+pandas
+SQLAlchemy
+psycopg2-binary
+typer
+python-dotenv
+rapidfuzz
+requests
+duckduckgo-search
+google-search-results

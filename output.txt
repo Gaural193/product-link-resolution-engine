@@ -1,0 +1,118 @@
+Track  D:  Product  Link  Resolution  for  
+Weekly
+ 
+Emails
+ 
+“Deals  Row  →  Real  Product  URL”  
+Goal  
+Build  a  backend  enrichment  tool  that  takes  weekly-deal  rows  without  links  and  resolves  them  to  
+real
+ 
+retailer
+ 
+product
+ 
+pages
+ 
+so
+ 
+they
+ 
+can
+ 
+be
+ 
+used
+ 
+in
+ 
+Prox’s
+ 
+weekly
+ 
+emails.
+ 
+This  track  evaluates  your  ability  to:  
+●  turn  imperfect  deal  data  into  email-ready  links  ●  match  retailer  +  product  +  size  to  the  correct  live  product  page  ●  handle  uncertainty  and  missing  data  ●  design  a  repeatable  enrichment  workflow  for  weekly  automation  
+ 
+Problem  Context  
+Our  weekly  deals  emails  need  clickable  product  links  that  bring  users  to  actual  retailer  product  
+pages.
+ 
+However,  our  scraper  outputs  often  do  not  include  product  URLs.  
+We  want  to  test  your  ability  to  build  a  tool  that:  
+●  accepts  deal  rows  ●  finds  likely  matching  product  pages  ●  returns  retailer-specific  product  links  ●  stores  match  confidence  and  resolution  method  ●  produces  output  that  can  plug  into  an  email-generation  workflow  
+You  may  use:  
+●  retailer  site  search  ●  public  search  endpoints  ●  search-engine-assisted  queries  ●  browser  automation  ●  AI-assisted  resolution  
+●  third-party  agent  tools  
+Choose  the  simplest  approach  that  works  reliably.  
+Sample  Input  Data  
+Use  the  following  sample  deal  rows:  
+[   {"retailer":"Ralphs","product":"Boneless  Skinless  Chicken  Breasts","size":"per  
+lb","price":2.99,"start":"2025-09-01","end":"2025-09-07","category":"protein"},
+  {"retailer":"Vons","product":"Seedless  Grapes  (Red/Green)","size":"per  
+lb","price":0.99,"start":"2025-09-01","end":"2025-09-07","category":"produce"},
+  {"retailer":"Smart  &  Final","product":"Tide  HE  Liquid","size":"170  fl  
+oz","price":13.99,"start":"2025-09-01","end":"2025-09-07","category":"household"},
+  {"retailer":"Aldi","product":"Organic  Blackberries","size":"6  
+oz","price":1.79,"start":"2025-09-01","end":"2025-09-07","category":"produce"},
+  {"retailer":"Whole  Foods","product":"Organic  
+Avocados","size":"each","price":1.49,"start":"2025-09-01","end":"2025-09-07","category":"produc
+e"},
+  {"retailer":"Sprouts","product":"Wild  Caught  Salmon  Fillet","size":"per  
+lb","price":8.99,"start":"2025-09-01","end":"2025-09-07","category":"protein"},
+  {"retailer":"Walmart","product":"Great  Value  Milk","size":"1  
+gallon","price":2.78,"start":"2025-09-01","end":"2025-09-07","category":"dairy"},
+  {"retailer":"CVS","product":"Charmin  Ultra  Soft","size":"12  
+rolls","price":11.49,"start":"2025-09-01","end":"2025-09-07","category":"household"}
+ ]  
+Requirements  
+1.  Link  Resolution  
+Your  tool  must  take  deal  rows  and  return,  where  possible:  
+●  retailer  ●  original  product  name  ●  original  size  ●  resolved_product_name  ●  resolved_product_url  ●  resolved_image_url  if  available  ●  confidence_score  ●  resolution_method  ●  notes  /  mismatch_reason  if  unresolved  
+A  submission  is  considered  successful  if  it:  
+●  resolves  links  for  at  least  4  of  the  8  sample  rows  ●  supports  at  least  3  retailers  ●  flags  uncertain  or  unresolved  matches  instead  of  forcing  bad  links  
+2.  Matching  Logic  
+Your  resolution  logic  should  use  some  combination  of:  
+●  retailer  match  ●  product-title  similarity  ●  brand  match  ●  size  match  ●  category  hints  ●  price  sanity  checks  if  available  
+You  should  clearly  distinguish:  
+●  high-confidence  exact  match  ●  acceptable  near  match  ●  unresolved  
+3.  Automation  Format  
+Provide  either:  
+●  CLI  ●  small  HTTP  endpoint  ●  simple  batch  job  
+Example:  
+npm  run  enrich:links  --  --input=sample-deals.json  --output=enriched-deals.json  
+4.  Data  Layer  
+Design  a  minimal  schema  for  storing  enrichment  results.  
+Suggested  schema:  
+●  deal_link_runs(id,  created_at,  source_name)  ●  deal_link_results(id,  run_id,  retailer,  original_product,  original_size,  
+resolved_product_name,
+ 
+resolved_product_url,
+ 
+confidence_score,
+ 
+resolution_method,
+ 
+status)
+ 
+Must  include  enough  structure  to:  
+●  rerun  unresolved  rows  later  ●  avoid  re-resolving  identical  deal  rows  unnecessarily  ●  inspect  why  a  row  was  linked  or  rejected  
+5.  Weekly  Email  Readiness  
+Output  should  be  usable  by  an  email  pipeline.  
+Include  a  final  enriched  JSON  or  CSV  that  could  feed  a  weekly  email  template.  
+Optional  stretch:  
+●  generate  a  simple  HTML  preview  of  one  retailer  section  from  the  enriched  data  
+6.  Reliability  /  Cost  Awareness  
+Include:  
+●  deduplication  of  repeated  rows  ●  caching  of  prior  resolutions  ●  retry  logic  ●  throttling  /  rate  limiting  ●  graceful  fallback  when  no  exact  link  is  found  
+If  using  AI  or  third-party  tools,  explain:  
+●  when  they  are  used  ●  how  much  they  might  cost  ●  why  you  would  or  would  not  use  them  in  a  weekly  production  workflow  
+7.  Scale  &  Cost  Strategy  (Required)  
+Include  a  1-page  write-up  answering:  
+●  How  would  you  avoid  re-linking  the  same  products  every  week?  ●  What  keys  would  you  use  for  caching  and  reuse?  ●  When  would  you  trust  an  old  link  vs  refresh  it?  ●  How  would  you  handle  multiple  retailers  at  scale?  ●  How  would  you  keep  this  cheap  enough  to  run  weekly  across  thousands  of  email  rows?  ●  How  would  you  measure  link  quality  and  failures  over  time?  
+Deliverables  
+●  Public  GitHub  repository  ●  Minimal  schema  or  migration  ●  Working  enrichment  tool  ●  README  including:  ○  setup  instructions  ○  tooling  decisions  ○  matching  /  resolution  logic  ○  tradeoffs  ○  Scale  &  Cost  Strategy  ●  Output  file  with  enriched  deal  rows  ●  Demo:  ○  screenshots,  or  ○  2–3  minute  video  
+Evaluation  Criteria  (20  points)  
+●  Link  resolution  quality  and  precision  (8  pts)  ●  Judgment  around  uncertainty  /  avoiding  bad  links  (5  pts)  ●  Automation  design  and  reusability  (4  pts)  ●  Code  quality  and  documentation  (3  pts)  
+ 
