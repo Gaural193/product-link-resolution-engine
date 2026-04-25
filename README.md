@@ -55,7 +55,7 @@ This project is a backend enrichment tool designed to take weekly deal rows with
 ## Scale & Cost Strategy
 
 **1. How would you avoid re-linking the same products every week?**
-This is already implemented. The pipeline utilizes an SQLite database. Before every API call, it queries the `deal_link_results` table. If the product was already successfully resolved with high confidence, it skips the search step and immediately pulls the cached URL.
+The pipeline utilizes an SQLite database. Before every API call, it queries the `deal_link_results` table. If the product was already successfully resolved with high confidence, it skips the search step and immediately pulls the cached URL.
 
 **2. What keys would you use for caching and reuse?**
 The composite key used for caching is the combination of `retailer` and `original_product`. Because sizes can sometimes fluctuate in data entry, tying the cache strictly to the retailer and product name ensures maximum cache hit rates while maintaining accuracy.
